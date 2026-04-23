@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Blog with array</title>
+  </head>
+  <body>
+    <h2>content navigation</h2>
+    <button onclick="showarticle(0)">Article 1</button>
+    <button onclick="showarticle(1)">Article 2</button>
+    <button onclick="showarticle(2)">Article 3</button>
+
+    <hr />
+
+    <div id="content">
+      <h3>Article Title</h3>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas,
+        voluptate!
+      </p>
+    </div>
+
+    <script>
+      const articles = [
+        {
+          title: "Article 1",
+          content:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate!",
+        },
+        {
+          title: "Article 2",
+          content:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate!",
+        },
+        {
+          title: "Article 3",
+          content:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptas, voluptate!",
+        },
+      ];
+      function showarticle(index) {
+        document.getElementById("content").innerHTML =
+          "<h3>" +
+          articles[index].title +
+          "</h3>" +
+          "<p>" +
+          articles[index].content +
+          "</p>";
+      }
+    </script>
+  </body>
+</html>
