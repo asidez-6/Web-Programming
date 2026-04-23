@@ -197,12 +197,12 @@ body {
     width: 100%;
   }
 
-  .manunavigasi ul li {
+  .menunavigasi ul li {
     text-align: center;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
   }
 
-  #enu-toggle:checked + .menunavigasi {
+  #menu-toggle:checked + .menunavigasi {
     display: block;
   }
 }
