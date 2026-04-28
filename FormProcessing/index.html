@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Data Manajement</title>
+    <style>
+        body{
+            font-family: "sagoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin : 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .container{
+            display: flex;
+            gap : 30px;
+            width: 100%;
+            max-width: 1100px;
+            align-items:flex-start;
+        }
+
+        .form-wrapper{
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .table-wrapper{
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            flex: 2.5;
+            min-width: 300px;
+        }
+
+        h2{
+            margin-top : 0;
+            color: #333;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #f4f4f9;
+            padding-bottom: 10px;
+            margin-bottom: 20px; 
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        input, textarea {
+            width: 100%;    
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;  
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #fafafa;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+
+        .col-nama { width: 15%; }
+        .col-email { width: 25%; }
+        .col-pesan { width: 60%; }
+
+        /* Gaya untuk pesan data kosong */
+        .empty-msg {
+            text-align: center;
+            color: #999; 
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <div class="form-wrapper">
+        <h2>Tambah Kontak</h2>
+        <form id="formKontak">
+        <label for="nama">Nama:</label>
+        <input type="text" id="nama" name="nama" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="pesan">Pesan:</label>
+        <textarea id="pesan" name="pesan" rows="4" required></textarea>
+
+        <button type="button" onclick="simpanData()">Simpan Data</button>
+        </form>
+        <div id="statusPesan" style="margin-top: 15px; font-size: 0.9rem; text-align: center;"></div>
+
+        <script>
+            function simpanData() {
+                const form = document.getElementById('formKontak');
+                const formData = new FormData(form);
+                const statusPesan = document.getElementById('statusPesan');
+                const tabel = document.getElementById('isiTabel');
+                // Mengirim data ke proses_kontak.php di latar belakang menggunakan Fetch API
+                fetch('proses_kontak.php', { 
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'sukses') {
+                        // 1. Tampilkan pesan sukses
+                        statusPesan.innerHTML = "<span style='color: green;'>Data berhasil disimpan!</span>";
+                         // Hapus baris "Belum ada data" jika ada
+                        if (tabel.children.length === 1 && tabel.children[0].innerText.includes("Belum ada data")) {
+                            tabel.innerHTML = '';
+                        }
+                        // 2. Tambahkan baris baru ke posisi paling atas tabel
+                        
+                        const barisBaru = tabel.insertRow(0);
+                        barisBaru.innerHTML = `
+                            <td>${data.nama}</td>
+                            <td>${data.email}</td>
+                            <td>${data.pesan}</td>
+                        `;
+                        // 3. Reset form dan bersikan pesan setelah 3 detik
+                        form.reset();
+                        setTimeout(()=>{ statusPesan.innerHTML = "";},3000);
+                    }else{
+                        statusPesan.innerHTML = "<span style='color:red;'>Gagal menyimpan data.</span>";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statusPesan.innerHTML = "Terjadi kesalahan saat mengirim data.";
+                });
+            }
+        </script>
+    </div>
+
+    <div class="table-wrapper">
+        <h2>Daftar Pesan Masuk</h2>
+        <table>
+        <thead>
+            <tr>
+            <th class="col-nama">Nama</th>
+            <th class="col-email">Email</th>
+            <th class="col-pesan">Pesan/Komentar</th>
+            </tr>
+        </thead>
+        <tbody id="isiTabel">
+            <tr>
+            <td colspan="3" class="empty-msg">Belum ada data untuk ditampilkan.</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    </div>
+</body>
+</html>
